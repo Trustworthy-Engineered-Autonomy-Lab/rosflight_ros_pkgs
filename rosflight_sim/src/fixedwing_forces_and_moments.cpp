@@ -33,9 +33,24 @@
  */
 
 #include <cmath>
+#include <fstream>
 #include <rclcpp/logging.hpp>
 #include <rclcpp/parameter_value.hpp>
 #include <rosflight_sim/fixedwing_forces_and_moments.hpp>
+
+void log_to_csv(double prop_force, double prop_torque, double delta_t)
+{
+  // Open the CSV file in append mode
+  static std::ofstream log_file("force_torque_log.csv", std::ios::app);
+
+  // If this is the first write, add the header
+  if (log_file.tellp() == 0) {
+    log_file << "Prop_Force,Prop_Torque,delta_t\n";
+  }
+
+  // Write the values to the CSV file
+  log_file << prop_force << "," << prop_torque << "," << delta_t << "\n";
+}
 
 namespace rosflight_sim
 {
@@ -457,11 +472,15 @@ Eigen::Matrix<double, 6, 1> Fixedwing::update_forces_and_torques(CurrentState x,
     + ((rho_) * (pow((prop_.D_prop), 3.0)) * (prop_.CT_1) * (Va) * (Omega_p) / (2 * M_PI))
     + ((rho_) * (pow((prop_.D_prop), 2.0)) * (prop_.CT_2) * (pow((Va), 2.0)));
   // double Prop_Force = 8.0*delta_.t;
+  // original below
   double Prop_Torque = ((rho_) * (pow((prop_.D_prop), 5.0))
                         * ((((prop_.CQ_0) / (4 * (pow((M_PI), 2.0))) * (pow((Omega_p), 2.0))))))
     + ((rho_) * (pow((prop_.D_prop), 4.0)) * (prop_.CQ_1) * (Va) * (Omega_p) / (2 * M_PI))
     + ((rho_) * (pow((prop_.D_prop), 3.0)) * (prop_.CQ_2) * (pow((Va), 2.0)));
-  // double Prop_Torque = 0.150*delta_.t;
+  // double Prop_Torque = 0.150 * delta_.t;
+  
+  log_to_csv(Prop_Force, Prop_Torque, delta_.t);
+  
   // Be sure that we have some significant airspeed before we run aerodynamics, and don't let NaNs get through
   if (Va > 1.0 && std::isfinite(Va)) {
     double alpha = atan2(wr, ur);
