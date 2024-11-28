@@ -467,19 +467,19 @@ Eigen::Matrix<double, 6, 1> Fixedwing::update_forces_and_torques(CurrentState x,
   average torque is 0.1N. Comment out or just uncomment Prop torque and force.
   */
 
-  double Prop_Force = ((rho_) * (pow((prop_.D_prop), 4.0))
-                       * (((prop_.CT_0) * (pow((Omega_p), 2.0))) / (4 * (pow((M_PI), 2.0)))))
-    + ((rho_) * (pow((prop_.D_prop), 3.0)) * (prop_.CT_1) * (Va) * (Omega_p) / (2 * M_PI))
-    + ((rho_) * (pow((prop_.D_prop), 2.0)) * (prop_.CT_2) * (pow((Va), 2.0)));
-  // double Prop_Force = 8.0*delta_.t;
+  // double Prop_Force = ((rho_) * (pow((prop_.D_prop), 4.0))
+  //                      * (((prop_.CT_0) * (pow((Omega_p), 2.0))) / (4 * (pow((M_PI), 2.0)))))
+  //   + ((rho_) * (pow((prop_.D_prop), 3.0)) * (prop_.CT_1) * (Va) * (Omega_p) / (2 * M_PI))
+  //   + ((rho_) * (pow((prop_.D_prop), 2.0)) * (prop_.CT_2) * (pow((Va), 2.0)));
+  double Prop_Force = 16.0*delta_.t;
   // original below
-  double Prop_Torque = ((rho_) * (pow((prop_.D_prop), 5.0))
-                        * ((((prop_.CQ_0) / (4 * (pow((M_PI), 2.0))) * (pow((Omega_p), 2.0))))))
-    + ((rho_) * (pow((prop_.D_prop), 4.0)) * (prop_.CQ_1) * (Va) * (Omega_p) / (2 * M_PI))
-    + ((rho_) * (pow((prop_.D_prop), 3.0)) * (prop_.CQ_2) * (pow((Va), 2.0)));
-  // double Prop_Torque = 0.150 * delta_.t;
+  // double Prop_Torque = ((rho_) * (pow((prop_.D_prop), 5.0))
+  //                       * ((((prop_.CQ_0) / (4 * (pow((M_PI), 2.0))) * (pow((Omega_p), 2.0))))))
+  //   + ((rho_) * (pow((prop_.D_prop), 4.0)) * (prop_.CQ_1) * (Va) * (Omega_p) / (2 * M_PI))
+  //   + ((rho_) * (pow((prop_.D_prop), 3.0)) * (prop_.CQ_2) * (pow((Va), 2.0)));
+  double Prop_Torque = 0.30 * delta_.t;
   
-  log_to_csv(Prop_Force, Prop_Torque, delta_.t);
+  // log_to_csv(Prop_Force, Prop_Torque, delta_.t);
   
   // Be sure that we have some significant airspeed before we run aerodynamics, and don't let NaNs get through
   if (Va > 1.0 && std::isfinite(Va)) {

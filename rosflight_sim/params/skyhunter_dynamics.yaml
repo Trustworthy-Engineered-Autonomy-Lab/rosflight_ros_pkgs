@@ -11,7 +11,8 @@
 /fixedwing/rosflight_sil:
   ros__parameters:
     rho: 1.2682
-    mass: 2.28
+    mass: 5.78
+    # mass: 2.28
 
     wing_s: 0.4296
     wing_b: 1.795
