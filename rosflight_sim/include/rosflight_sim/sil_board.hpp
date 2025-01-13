@@ -48,7 +48,6 @@
 
 #include <geometry_msgs/msg/twist_stamped.hpp>
 #include <rclcpp/rclcpp.hpp>
-#include <rosflight_msgs/msg/detail/gnss_full__struct.hpp>
 #include <rosflight_msgs/msg/rc_raw.hpp>
 
 #include <rosflight_sim/gz_compat.hpp>
@@ -93,9 +92,9 @@ private:
   double baro_stdev_ = 0;
   double baro_bias_range_ = 0;
 
-  double mag_bias_walk_stdev_ = 0;
   double mag_stdev_ = 0;
-  double mag_bias_range_ = 0;
+  ignition::math::Vector3d mag_gauss_markov_eta_;
+  double k_mag_ = 0;
 
   double airspeed_bias_walk_stdev_ = 0;
   double airspeed_stdev_ = 0;
@@ -105,9 +104,11 @@ private:
   double sonar_max_range_ = 0;
   double sonar_min_range_ = 0;
 
-  double horizontal_gps_stdev_ = 0;
-  double vertical_gps_stdev_ = 0;
-  double gps_velocity_stdev_ = 0;
+  double horizontal_gnss_stdev_ = 0;
+  double vertical_gnss_stdev_ = 0;
+  double gnss_velocity_stdev_ = 0;
+  ignition::math::Vector3d gnss_gauss_markov_eta_;
+  double k_gnss_ = 0;
 
   double f_x = 0;
   double f_y = 0;
@@ -370,6 +371,15 @@ public:
    */
   void pwm_init(uint32_t refresh_rate, uint16_t idle_pwm) override;
   /**
+   * @brief Initializes RC PWM values to idle values.
+   *
+   * @note Calls pwm_init method. Parameters are not used in SIL board.
+   *
+   * @param rate The refresh rate of the channel
+   * @param channels The number of channels to write to.
+   */
+  void pwm_init_multi(const float *rate, uint32_t channels) override;
+  /**
    * @brief Writes PWM value to given channel, from a value between 0 and 1. The value is scaled to
    * 1000 to 2000 and then written to the channel.
    *
@@ -377,6 +387,13 @@ public:
    * @param value Value between 0 and 1, to write to channel.
    */
   void pwm_write(uint8_t channel, float value) override;
+  /**
+   * @brief Writes PWM value to given channels, using pwm_write method. 
+   *
+   * @param channel Channel to write PWM to.
+   * @param value Array of values between 0 and 1, to write to channel.
+   */
+  void pwm_write_multi(float *value, uint32_t channels) override;
   /**
    * @brief Sets all PWM values to 1000.
    */
