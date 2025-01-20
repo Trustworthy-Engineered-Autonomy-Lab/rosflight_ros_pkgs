@@ -40,7 +40,7 @@
 
     <include>
       <uri>model://house_3</uri>
-      <pose>0 1000.00 0 0 0</pose> 
+      <pose>500 1000.00 0 0 0</pose> 
       <size>20000 20000</size>     
     </include>
     
@@ -57,8 +57,8 @@
           <surface>
             <friction>
               <ode>
-                <mu>0.1</mu>
-                <mu2>0.1</mu2>
+                <mu>0.25</mu>
+                <mu2>0.25</mu2>
               </ode>
             </friction>
           </surface>
