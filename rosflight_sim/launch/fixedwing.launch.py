@@ -74,7 +74,7 @@ def generate_launch_description():
         'ros_log_level', default_value=TextSubstitution(text='info')
     )
 
-    aircraft = 'skyhunter' # default aircraft
+    aircraft = 'anaconda' # default aircraft
 
     for arg in sys.argv:
         if arg.startswith("aircraft:="):
@@ -107,7 +107,7 @@ def generate_launch_description():
         xacro_filepath_string, mappings={
             'mesh_file_location': os.path.join(
                 get_package_share_directory('rosflight_sim'),
-                'resources/skyhunter.dae'
+                'resources/Missile_Final.dae'
             )
         }
     ).toxml()

@@ -96,6 +96,7 @@ add_library(rosflight_firmware
 
   include/rosflight_sim/rosflight_firmware/lib/turbomath/turbomath.cpp
 )
+target_link_libraries(rosflight_firmware Eigen3::Eigen)
 target_compile_definitions(rosflight_firmware PUBLIC
   GIT_VERSION_HASH=0x${GIT_VERSION_HASH}
   GIT_VERSION_STRING=\"${GIT_VERSION_STRING}\"
@@ -196,6 +197,7 @@ install(
 
 install(PROGRAMS
   src/rc.py
+  src/vimfly.py
   DESTINATION lib/${PROJECT_NAME}
 )
 

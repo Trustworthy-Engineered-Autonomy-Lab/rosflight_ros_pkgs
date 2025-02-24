@@ -401,8 +401,8 @@ Eigen::Matrix<double, 6, 1> Fixedwing::update_forces_and_torques(CurrentState x,
 {
   delta_.a = (act_cmds[0] - 1500.0) / 500.0;
   delta_.e = -(act_cmds[1] - 1500.0) / 500.0;
-  delta_.t = (act_cmds[2] - 1000.0) / 1000.0;
-  delta_.r = -(act_cmds[3] - 1500.0) / 500.0;
+  delta_.t = (act_cmds[4] - 1000.0) / 1000.0;
+  delta_.r = -(act_cmds[2] - 1500.0) / 500.0;
 
   Actuators delta_curr;
 
@@ -448,15 +448,20 @@ Eigen::Matrix<double, 6, 1> Fixedwing::update_forces_and_torques(CurrentState x,
 
   double Omega_p = ((-b + sqrt((pow((b), 2.0)) - (4 * a * c))) / (2 * a));
 
-  double Prop_Force = ((rho_) * (pow((prop_.D_prop), 4.0))
-                       * (((prop_.CT_0) * (pow((Omega_p), 2.0))) / (4 * (pow((M_PI), 2.0)))))
-    + ((rho_) * (pow((prop_.D_prop), 3.0)) * (prop_.CT_1) * (Va) * (Omega_p) / (2 * M_PI))
-    + ((rho_) * (pow((prop_.D_prop), 2.0)) * (prop_.CT_2) * (pow((Va), 2.0)));
+  //double Prop_Force = ((rho_) * (pow((prop_.D_prop), 4.0))
+  //                     * (((prop_.CT_0) * (pow((Omega_p), 2.0))) / (4 * (pow((M_PI), 2.0)))))
+  //  + ((rho_) * (pow((prop_.D_prop), 3.0)) * (prop_.CT_1) * (Va) * (Omega_p) / (2 * M_PI))
+  //  + ((rho_) * (pow((prop_.D_prop), 2.0)) * (prop_.CT_2) * (pow((Va), 2.0)));
 
-  double Prop_Torque = ((rho_) * (pow((prop_.D_prop), 5.0))
-                        * ((((prop_.CQ_0) / (4 * (pow((M_PI), 2.0))) * (pow((Omega_p), 2.0))))))
-    + ((rho_) * (pow((prop_.D_prop), 4.0)) * (prop_.CQ_1) * (Va) * (Omega_p) / (2 * M_PI))
-    + ((rho_) * (pow((prop_.D_prop), 3.0)) * (prop_.CQ_2) * (pow((Va), 2.0)));
+  // Updated force equations
+  double Prop_Force = 18.0 * delta_.t;
+
+  //double Prop_Torque = ((rho_) * (pow((prop_.D_prop), 5.0))
+  //                      * ((((prop_.CQ_0) / (4 * (pow((M_PI), 2.0))) * (pow((Omega_p), 2.0))))))
+  //  + ((rho_) * (pow((prop_.D_prop), 4.0)) * (prop_.CQ_1) * (Va) * (Omega_p) / (2 * M_PI))
+  //  + ((rho_) * (pow((prop_.D_prop), 3.0)) * (prop_.CQ_2) * (pow((Va), 2.0)));
+
+  double Prop_Torque = 0.325 * delta_.t;
 
   // Be sure that we have some significant airspeed before we run aerodynamics, and don't let NaNs get through
   if (Va > 1.0 && std::isfinite(Va)) {
